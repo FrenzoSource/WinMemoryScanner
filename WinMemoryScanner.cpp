@@ -15,11 +15,21 @@ int main() {
 
     if (h == NULL) {
         std::cout << "Echec. Erreur : " << GetLastError() << std::endl;
+        return 1;
+    }
+
+
+    char buffer[MAX_PATH];   // tampon 
+    DWORD size = MAX_PATH;
+
+    if (QueryFullProcessImageNameA(h, 0, buffer, &size)) {
+        std::cout << "Chemin du processus : " << buffer << std::endl;
     }
     else {
-        std::cout << "Succèes le handle est : " << h << std::endl;   
-        CloseHandle(h);  // TOUJOURS FERMER
+        std::cout << "Impossible d'obtenir le chemin. Erreur : " << GetLastError() << std::endl;
     };
+    CloseHandle(h);  // TOUJOURS FERMER
+
     return 0;
 
     /*
