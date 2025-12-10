@@ -6,7 +6,7 @@ Le fonctionnement interne d'un système d'exploitation, nottament la gestion de 
 au cœur de l'execution d'un programme : variables, piles,... tout y réside.
 
 Un Memory Scanner est un outil qui explore ces zones mémoires, les visualises et permet d'effectuer des recherches précises.
-Ce projet représente donc une opportunité pour comprendre concrètement comment un processus alloue, organise et expose sa mémoire, 
+Ce projet utilise la WinAPI et représente donc une opportunité pour comprendre concrètement comment un processus alloue, organise et expose sa mémoire, 
 tout en renforcant mes compétences C++.
 
 La problématique sur laquelle je m'appuierai pour ce projet est: "Comment permettre à un utilisateur d’explorer la mémoire interne d’un processus de manière sécurisée, lisible et pédagogique, à l’aide d’un outil C++ simple, portable et documenté ?"
