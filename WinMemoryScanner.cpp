@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include <psapi.h>      //nous sert a observer et analyser les processus Windows
 
 
 
@@ -48,8 +49,11 @@ void affichage_etat_proc(HANDLE proc, DWORD & code_sortie) {
 
 
 
-int main() {
 
+
+
+int main() {
+    /*
     //ouverture d'un processus  pour récuperer un HANDLE
     HANDLE proc1 = openProcess_pid();
     if (proc1 == NULL) {    //Important pour la gestion des erreurs
@@ -70,9 +74,35 @@ int main() {
     DWORD exitCode = 0;
     affichage_etat_proc(proc1, exitCode);
 
-
-
     CloseHandle(proc1);  // TOUJOURS FERMER
+    */
+
+
+    DWORD tabPids[1024];    //tableau de PID
+    DWORD octets_retourne = 0;
+
+    if (!EnumProcesses(tabPids, sizeof(tabPids), &octets_retourne)) {
+        std::cout << "Echec de EnumProcess." << std::endl;
+        return 1;
+    }
+
+    DWORD nbre_pid = octets_retourne / sizeof(DWORD);
+    for (DWORD i = 0; i < nbre_pid; ++i) {
+        std::cout << "PID: " << tabPids[i] << "   ";
+        HANDLE h_tmp = OpenProcess(PROCESS_QUERY_INFORMATION, false, tabPids[i]);
+        if (h_tmp == NULL) {
+            affichage_erreur(GetLastError());
+        }
+        else {
+            //recréation du tableau de chemin a chaque itération
+            char tampon_proc1[MAX_PATH];
+            DWORD taille_tampon_proc1 = MAX_PATH;
+            affichage_chemin_proc(h_tmp, tampon_proc1, taille_tampon_proc1);
+
+            DWORD code_sortie = 0;
+            affichage_etat_proc(h_tmp, code_sortie);
+        };
+    };
 
     return 0;
 
