@@ -50,18 +50,24 @@ void affichage_etat_proc(HANDLE proc, DWORD & code_sortie) {
 
 
 
+DWORD listage_processus(DWORD * tab_pid, DWORD taille_max, DWORD * nb_processus) {
+    DWORD octets_retourne = 0;
+
+    if (!EnumProcesses(tab_pid, taille_max * sizeof(DWORD), &octets_retourne)) {
+        std::cout << "Echec de EnumProcesses." << std::endl;
+        return 0; // échec
+    }
+
+    *nb_processus = octets_retourne / sizeof(DWORD);
+    return 1; // succès
+}
+
+
 
 
 int main() {
     /*
-    //ouverture d'un processus  pour récuperer un HANDLE
-    HANDLE proc1 = openProcess_pid();
-    if (proc1 == NULL) {    //Important pour la gestion des erreurs
-        affichage_erreur(GetLastError());
-        return 1;
-    }
-
-
+        [OBTENTION DE HANDLE DUN PROCESSUS]
 
     //MAX_PATH est défini dans la WinApi et vaut 260
     char tampon_proc1[MAX_PATH];
@@ -73,41 +79,34 @@ int main() {
     
     DWORD exitCode = 0;
     affichage_etat_proc(proc1, exitCode);
-
     CloseHandle(proc1);  // TOUJOURS FERMER
     */
 
 
     DWORD tabPids[1024];    //tableau de PID
-    DWORD octets_retourne = 0;
+    DWORD nbre_proc = 0;
 
-    if (!EnumProcesses(tabPids, sizeof(tabPids), &octets_retourne)) {
-        std::cout << "Echec de EnumProcess." << std::endl;
-        return 1;
-    }
+    if (listage_processus(tabPids, 1024, &nbre_proc)) {
+        for (DWORD i = 0; i < nbre_proc; ++i) {
+            std::cout << "PID: " << tabPids[i] << "   ";
+            HANDLE h_tmp = OpenProcess(PROCESS_QUERY_INFORMATION, false, tabPids[i]);
+            if (h_tmp == NULL) {
+                affichage_erreur(GetLastError());
+            }
+            else {
+                //recréation du tableau de chemin a chaque itération
+                char tampon_proc1[MAX_PATH];
+                DWORD taille_tampon_proc1 = MAX_PATH;
+                affichage_chemin_proc(h_tmp, tampon_proc1, taille_tampon_proc1);
 
-    DWORD nbre_pid = octets_retourne / sizeof(DWORD);
-    for (DWORD i = 0; i < nbre_pid; ++i) {
-        std::cout << "PID: " << tabPids[i] << "   ";
-        HANDLE h_tmp = OpenProcess(PROCESS_QUERY_INFORMATION, false, tabPids[i]);
-        if (h_tmp == NULL) {
-            affichage_erreur(GetLastError());
-        }
-        else {
-            //recréation du tableau de chemin a chaque itération
-            char tampon_proc1[MAX_PATH];
-            DWORD taille_tampon_proc1 = MAX_PATH;
-            affichage_chemin_proc(h_tmp, tampon_proc1, taille_tampon_proc1);
-
-            DWORD code_sortie = 0;
-            affichage_etat_proc(h_tmp, code_sortie);
+                DWORD code_sortie = 0;
+                affichage_etat_proc(h_tmp, code_sortie);
+            };
+            CloseHandle(h_tmp);
         };
     };
 
-    return 0;
+    
 
-    /*
-    si val de la forme 0x..... alors Windows nous a donner un handle qui nous sera utile dans la suite pour receuillir 
-    des infos tels que (le nom du processus, l'utilisation en mémoire, ...)
-    */
+    return 0;
 }
