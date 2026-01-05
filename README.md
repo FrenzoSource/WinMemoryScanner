@@ -19,4 +19,4 @@ Cette problématique soulève plusieurs enjeux :
 ---
 
 ##Schéma Mémoire Windows (après Windows Vista / 2006)
-![Mémoire Windows](images_winmemscanner/schema_memoire_windows.png)
+![Mémoire Windows](images_winmemoryscanner/schema_memoire_windows.png)
