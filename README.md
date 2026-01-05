@@ -14,3 +14,9 @@ Cette problématique soulève plusieurs enjeux :
 - Comment identifier et lire les différentes zones mémoires d'un processus ?
 - Comment analyser et exploiter les informations exposées par l'équivalent Windows de /proc ?
 - Comment rendre compréhensible et accessible une architecture normalement complexe ?
+
+
+---
+
+##Schéma Mémoire Windows (après Windows Vista / 2006)
+![Mémoire Windows](images_winmemscanner/schema_memoire_windows.png)
