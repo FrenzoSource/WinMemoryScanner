@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="images_winmemoryscanner/logo_WMS.png" width="200" alt="WinMemoryScanner Logo">
+</p>
+
+
 Pojet "Mini Memory Scanner" en C++ sous Windows
 
 
