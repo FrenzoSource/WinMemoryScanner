@@ -18,5 +18,5 @@ Cette problématique soulève plusieurs enjeux :
 
 ---
 
-##Schéma Mémoire Windows (après Windows Vista / 2006)
+## Schéma Mémoire Windows (après Windows Vista / 2006)
 ![Mémoire Windows](images_winmemoryscanner/schema_memoire_windows.png)
