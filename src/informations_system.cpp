@@ -9,6 +9,16 @@
 
 
 
+struct systeme {
+    std::string processeur_machine;
+    DWORD taille_page;    //en octets
+    DWORD nbre_proc_grpe;
+    std::string type_proc;
+    DWORD percent_mem_phys;
+    double mem_phys_totale;
+};
+
+
 
 std::string architecture_processeur (SYSTEM_INFO info_sys) {
     switch (info_sys.wProcessorArchitecture) {
@@ -77,74 +87,90 @@ DWORD memoire_phys_utilise (MEMORYSTATUSEX mem_pc) {
     return mem_pc.dwMemoryLoad;
 }
 
+
 DWORDLONG memoire_phy_max (const MEMORYSTATUSEX & mem_pc) {
     return mem_pc.ullTotalPhys;
 }
 
 
-void creation_fic (std::string nom_fic) {
+
+void creation_fic (const systeme & sys, std::string nom_fic) {
     std::ofstream outfile (nom_fic);
     outfile << "==============================================================================================================" << std::endl;
     outfile << "================================ INFORMATIONS RELATIVE AU SYSTEME ============================================" << std::endl;
     outfile << "==============================================================================================================" << std::endl;
+    outfile << "Processeur de la machine : " << sys.processeur_machine << std::endl;
+    outfile << "Taille page memoire : " << sys.taille_page << " octets." << std::endl;
+    outfile << "Nombre de processeurs logiques dans le groupe actuel : " << sys.nbre_proc_grpe << std::endl;
+    outfile << "Type du processeur :" << sys.type_proc << std::endl;
+    outfile << std::endl;
+
+    outfile << "==============================================================================================================" << std::endl;
+    outfile << "================================ INFORMATIONS RELATIVE A LA MEMOIRE ==========================================" << std::endl;
+    outfile << "==============================================================================================================" << std::endl;
+    outfile << "Pourcentage de memoire physique utilise : " << sys.percent_mem_phys << "%." << std::endl;
+    outfile << "Quantite de la RAM utilisable : " << sys.mem_phys_totale << " GO." << std::endl;
+
     outfile.close();
 }
 
-void choix_export() {
+
+
+
+void choix_export(const systeme & sys) {
     char choix;
-    std::string fic_infosys = "data_info_system.txt";
-    std::cout << "Exporter les données dans un fichier texte ?" << std::endl;
+    std::string fic_data = "../output_data/data_info_system.txt";
+    std::cout << "Exporter les donnees dans un fichier texte ?" << std::endl;
     do {
         std::cout << "Veuillez saisir 'o' ou 'n' (o=oui   n=non) : ";
         std::cin >> choix;
     } while ((choix != 'o') and (choix != 'n') and (choix != 'O') and (choix != 'N'));
-    if ((choix == 'o') or (choix == 'O')) creation_fic(fic_infosys);
+    if ((choix == 'o') or (choix == 'O')) {
+        creation_fic(sys, fic_data);
+        std::cout << "Le fichier de donnees se situe dans le dossier \'../output_data\'" << std::endl;
+    };
 }
 
 
-int main() {
+int show_system_infos() {
     SYSTEM_INFO info_sys;
     GetSystemInfo(&info_sys);
     MEMORYSTATUSEX info_mem;       
     info_mem.dwLength = sizeof(info_mem);       //on doit tjrs initialiser le champ dwLength de la structure MEMORYSTATUSEX avant l’appel
     if (!GlobalMemoryStatusEx(&info_mem)) {
-        std::cerr << "Erreur lors de la récupération de la mémoire" << std::endl;
+        std::cerr << "Erreur lors de la recupération de la memoire" << std::endl;
         return 1;
     };
-    
-    std::string processeur_machine = architecture_processeur(info_sys);
-    DWORD taille_page = taille_page_memoire(info_sys);    //en octets
-    DWORD nbre_proc_grpe = nbre_processeur_grpe(info_sys);
-    std::string type_proc = type_processeur(info_sys);
-    DWORD percent_mem_phys = memoire_phys_utilise(info_mem);
-    double mem_phys_totale = static_cast<double>(info_mem.ullTotalPhys) / (1024.0*1024.0*1024.0);
 
+    systeme sys;
+    
+    sys.processeur_machine = architecture_processeur(info_sys);
+    sys.taille_page = taille_page_memoire(info_sys);    //en octets
+    sys.nbre_proc_grpe = nbre_processeur_grpe(info_sys);
+    sys.type_proc = type_processeur(info_sys);
+    sys.percent_mem_phys = memoire_phys_utilise(info_mem);
+    sys.mem_phys_totale = static_cast<double>(info_mem.ullTotalPhys) / (1024.0*1024.0*1024.0);
+
+    
     std::cout << "==============================================================================================================" << std::endl;
     std::cout << "================================ INFORMATIONS RELATIVE AU SYSTEME ============================================" << std::endl;
     std::cout << "==============================================================================================================" << std::endl;
-    std::cout << "Processeur de la machine : " << processeur_machine << std::endl;
-    std::cout << "Taille page memoire : " << taille_page << " octets." << std::endl;
-    std::cout << "Nombre de processeurs logiques dans le groupe actuel : " << nbre_proc_grpe << std::endl;
-    std::cout << "Type du processeur :" << type_proc << std::endl;
+    std::cout << "Processeur de la machine : " << sys.processeur_machine << std::endl;
+    std::cout << "Taille page memoire : " << sys.taille_page << " octets." << std::endl;
+    std::cout << "Nombre de processeurs logiques dans le groupe actuel : " << sys.nbre_proc_grpe << std::endl;
+    std::cout << "Type du processeur :" << sys.type_proc << std::endl;
     std::cout << std::endl;
 
     std::cout << "==============================================================================================================" << std::endl;
     std::cout << "================================ INFORMATIONS RELATIVE A LA MEMOIRE ==========================================" << std::endl;
     std::cout << "==============================================================================================================" << std::endl;
-    std::cout << "Pourcentage de memoire physique utilise : " << percent_mem_phys << "%." << std::endl;
-    std::cout << "Quantite de la RAM utilisable : " << mem_phys_totale << " GO." << std::endl;
+    std::cout << "Pourcentage de memoire physique utilise : " << sys.percent_mem_phys << "%." << std::endl;
+    std::cout << "Quantite de la RAM utilisable : " << sys.mem_phys_totale << " GO." << std::endl;
 
-    choix_export();
+    choix_export(sys);
 
-    /*
-    std::ofstream outfile ("test.txt");
-    outfile << "my text here!" << std::endl;
-    outfile.close();
-    */
     return 0;
 }
-
-
 
 
 
