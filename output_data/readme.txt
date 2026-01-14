@@ -1,0 +1,1 @@
+Ce dossier contient les fichiers texte générés lors de l’exportation des données.
