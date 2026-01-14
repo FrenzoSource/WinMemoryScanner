@@ -98,7 +98,7 @@ void choix_export() {
         std::cout << "Veuillez saisir 'o' ou 'n' (o=oui   n=non) : ";
         std::cin >> choix;
     } while ((choix != 'o') and (choix != 'n') and (choix != 'O') and (choix != 'N'));
-    if ((choix == 'o') or (choix == 'n')) creation_fic(fic_infosys);
+    if ((choix == 'o') or (choix == 'O')) creation_fic(fic_infosys);
 }
 
 
