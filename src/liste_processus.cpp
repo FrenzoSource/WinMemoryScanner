@@ -103,7 +103,7 @@ std::string extraction_nom_exe(char * tampon, DWORD taille) {
     std::string chaine = "";
     std::stack<char> lettre_chemin;
     int n = taille - 1;
-    while ((n >= 0) and (tampon[n] != '\\')) {
+    while ((n >= 0) && (tampon[n] != '\\')) {
         lettre_chemin.push(tampon[n]);
         --n;
     };
@@ -256,8 +256,8 @@ void choix_export(Tab_info_proc tab_info, DWORD nbre_proc) {
     do {
         std::cout << "Veuillez saisir 'o' ou 'n' (o=oui   n=non) : ";
         std::cin >> choix;
-    } while ((choix != 'o') and (choix != 'n') and (choix != 'O') and (choix != 'N'));
-    if ((choix == 'o') or (choix == 'O')) {
+    } while ((choix != 'o') && (choix != 'n') && (choix != 'O') && (choix != 'N'));
+    if ((choix == 'o') || (choix == 'O')) {
         std::string fic_data = "../output_data/data_liste_proc.txt";
         creation_fic(tab_info, fic_data, nbre_proc);
         std::cout << "Le fichier de donnees se situe dans le dossier \'../output_data\'" << std::endl;
@@ -266,13 +266,14 @@ void choix_export(Tab_info_proc tab_info, DWORD nbre_proc) {
 
 
 
-int main() {
-//----------------------------------------------ENUMERER TOUT LES PROCESSUS DE LA MACHINE--------------------------------------------------------
+int show_liste_proc() {
+    //----------------------------------------------ENUMERER TOUT LES PROCESSUS DE LA MACHINE--------------------------------------------------------
     DWORD tabPids[1024];    //tableau de PID
     DWORD nbre_proc = 0;
     Tab_info_proc tab_info = nullptr;
 
     if (listage_processus(tabPids, 1024, &nbre_proc)) {
+        std::cout << "\n\n\n";
         std::cout << "Nombre de processus en cours d'execution : " << nbre_proc << std::endl;
     
         for (DWORD i = 0; i < nbre_proc; ++i) {
@@ -303,11 +304,7 @@ int main() {
     };
     choix_export(tab_info, nbre_proc);
 
-    /*
-    std::cout << std::endl;
-    std::cout << "TAB INFO :" << std::endl;
-    affichage_tab_info(tab_info);
-    */
+   
     libere_tab(tab_info);
 
     return 0;

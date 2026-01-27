@@ -124,8 +124,8 @@ void choix_export(const systeme & sys) {
     do {
         std::cout << "Veuillez saisir 'o' ou 'n' (o=oui   n=non) : ";
         std::cin >> choix;
-    } while ((choix != 'o') and (choix != 'n') and (choix != 'O') and (choix != 'N'));
-    if ((choix == 'o') or (choix == 'O')) {
+    } while ((choix != 'o') && (choix != 'n') && (choix != 'O') && (choix != 'N'));
+    if ((choix == 'o') || (choix == 'O')) {
         creation_fic(sys, fic_data);
         std::cout << "Le fichier de donnees se situe dans le dossier \'../output_data\'" << std::endl;
     };
@@ -151,7 +151,7 @@ int show_system_infos() {
     sys.percent_mem_phys = memoire_phys_utilise(info_mem);
     sys.mem_phys_totale = static_cast<double>(info_mem.ullTotalPhys) / (1024.0*1024.0*1024.0);
 
-    
+    std::cout << "\n\n\n\n";
     std::cout << "==============================================================================================================" << std::endl;
     std::cout << "================================ INFORMATIONS RELATIVE AU SYSTEME ============================================" << std::endl;
     std::cout << "==============================================================================================================" << std::endl;
